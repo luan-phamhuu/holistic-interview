@@ -37,6 +37,10 @@ gem 'jbuilder', '~> 2.5'
 
 group :development do
   gem 'guard'
+  gem 'guard-bundler', require: false
+  gem 'guard-livereload', '~> 2.5', require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-rubocop'
 end
 
 group :development, :test do
