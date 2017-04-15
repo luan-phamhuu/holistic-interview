@@ -373,28 +373,6 @@ REPLConsole.prototype.install = function(container) {
   addClass(container.getElementsByClassName('button'), 'border-box');
   addClass(consoleActions, 'pos-fixed pos-right');
 
-  // Make the console resizable.
-  function resizeContainer(ev) {
-    var startY              = ev.clientY;
-    var startHeight         = parseInt(document.defaultView.getComputedStyle(container).height, 10);
-    var scrollTopStart      = consoleOuter.scrollTop;
-    var clientHeightStart   = consoleOuter.clientHeight;
-
-    var doDrag = function(e) {
-      container.style.height = (startHeight + startY - e.clientY) + 'px';
-      consoleOuter.scrollTop = scrollTopStart + (clientHeightStart - consoleOuter.clientHeight);
-      shiftConsoleActions();
-    };
-
-    var stopDrag = function(e) {
-      document.documentElement.removeEventListener('mousemove', doDrag, false);
-      document.documentElement.removeEventListener('mouseup', stopDrag, false);
-    };
-
-    document.documentElement.addEventListener('mousemove', doDrag, false);
-    document.documentElement.addEventListener('mouseup', stopDrag, false);
-  }
-
   function closeContainer(ev) {
     container.parentNode.removeChild(container);
   }
@@ -421,7 +399,6 @@ REPLConsole.prototype.install = function(container) {
   this.newPromptBox();
   this.insertCss();
 
-  findChild(container, 'resizer').addEventListener('mousedown', resizeContainer);
   findChild(consoleActions, 'close-button').addEventListener('click', closeContainer);
   consoleOuter.addEventListener('DOMNodeInserted', shiftConsoleActions);
 
