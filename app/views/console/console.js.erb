@@ -264,31 +264,10 @@ function REPLConsole(config) {
     return config && config[key] || defaultValue;
   }
 
-  // this.commandStorage = new CommandStorage();
+  this.commandStorage = new CommandStorage();
   this.prompt = getConfig('promptLabel', ' >>');
-  this.mountPoint = getConfig('mountPoint');
-  this.sessionId = getConfig('sessionId');
   this.autocomplete = false;
 }
-
-REPLConsole.prototype.getSessionUrl = function(path) {
-  var parts = [ this.mountPoint, 'repl_sessions', this.sessionId ];
-  if (path) {
-    parts.push(path);
-  }
-  // Join and remove duplicate slashes.
-  return parts.join('/').replace(/([^:]\/)\/+/g, '$1');
-};
-
-REPLConsole.prototype.contextRequest = function(keyword, callback) {
-  putRequest(this.getSessionUrl(), 'context=' + getContext(keyword), function(xhr) {
-    if (xhr.status == 200) {
-      callback(null, JSON.parse(xhr.responseText));
-    } else {
-      callback(xhr.statusText);
-    }
-  });
-};
 
 REPLConsole.prototype.commandHandle = function(line, callback) {
   console.log('enter');
@@ -396,8 +375,6 @@ REPLConsole.prototype.install = function(container) {
   this.insertCss();
 
   consoleOuter.addEventListener('DOMNodeInserted', shiftConsoleActions);
-
-  REPLConsole.currentSession = this;
 };
 
 // Add CSS styles dynamically. This probably doesnt work for IE <8.
@@ -514,7 +491,7 @@ REPLConsole.prototype.setInput = function(input, caretPos) {
   this._input = input;
   if (this.autocomplete) this.autocomplete.refine(this.getCurrentWord());
   this.renderInput();
-  if (!this.autocomplete && input.length == this._caretPos) this.getSuggestion(this.getCurrentWord());
+  // if (!this.autocomplete && input.length == this._caretPos) this.getSuggestion(this.getCurrentWord());
 };
 
 /**
@@ -627,18 +604,6 @@ REPLConsole.prototype.onKeyDown = function(ev) {
   }
 
   switch (ev.keyCode) {
-    case 69:
-      // Ctrl-E
-      if (ev.ctrlKey) {
-        this.onTabKey();
-        ev.preventDefault();
-      }
-      break;
-    case 9:
-      // Tab
-      this.onTabKey();
-      ev.preventDefault();
-      break;
     case 13:
       // Enter key
       this.onEnterKey();
@@ -768,11 +733,11 @@ REPLConsole.prototype.scrollToBottom = function() {
 };
 
 // Change the binding of the console
-REPLConsole.prototype.switchBindingTo = function(frameId, callback) {
-  var url = this.getSessionUrl('trace');
-  var params = "frame_id=" + encodeURIComponent(frameId);
-  postRequest(url, params, callback);
-};
+// REPLConsole.prototype.switchBindingTo = function(frameId, callback) {
+//   var url = this.getSessionUrl('trace');
+//   var params = "frame_id=" + encodeURIComponent(frameId);
+//   postRequest(url, params, callback);
+// };
 
 /**
  * Install the console into the element with a specific ID.
