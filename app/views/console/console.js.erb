@@ -373,10 +373,6 @@ REPLConsole.prototype.install = function(container) {
   addClass(container.getElementsByClassName('button'), 'border-box');
   addClass(consoleActions, 'pos-fixed pos-right');
 
-  function closeContainer(ev) {
-    container.parentNode.removeChild(container);
-  }
-
   var shifted = false;
   function shiftConsoleActions() {
     if (consoleOuter.scrollHeight > consoleOuter.clientHeight) {
@@ -399,7 +395,6 @@ REPLConsole.prototype.install = function(container) {
   this.newPromptBox();
   this.insertCss();
 
-  findChild(consoleActions, 'close-button').addEventListener('click', closeContainer);
   consoleOuter.addEventListener('DOMNodeInserted', shiftConsoleActions);
 
   REPLConsole.currentSession = this;
