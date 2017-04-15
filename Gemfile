@@ -44,7 +44,6 @@ group :development do
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-rspec', require: false
 
-  gem 'web-console'
 end
 
 group :development, :test do

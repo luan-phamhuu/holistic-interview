@@ -270,45 +270,44 @@ function REPLConsole(config) {
 }
 
 REPLConsole.prototype.commandHandle = function(line, callback) {
-  console.log('enter');
-  // var self = this;
-  // var params = 'input=' + encodeURIComponent(line);
-  // callback = callback || function() {};
-  //
-  // function isSuccess(status) {
-  //   return status >= 200 && status < 300 || status === 304;
-  // }
-  //
-  // function parseJSON(text) {
-  //   try {
-  //     return JSON.parse(text);
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
-  //
-  // function getErrorText(xhr) {
-  //   if (!xhr.status) {
-  //     return "Connection Refused";
-  //   } else {
-  //     return xhr.status + ' ' + xhr.statusText;
-  //   }
-  // }
-  //
-  // putRequest(self.getSessionUrl(), params, function(xhr) {
-  //   var response = parseJSON(xhr.responseText);
-  //   var result   = isSuccess(xhr.status);
-  //   if (result) {
-  //     self.writeOutput(response.output);
-  //   } else {
-  //     if (response && response.output) {
-  //       self.writeError(response.output);
-  //     } else {
-  //       self.writeError(getErrorText(xhr));
-  //     }
-  //   }
-  //   callback(result, response);
-  // });
+  var self = this;
+  var params = 'input=' + encodeURIComponent(line);
+  callback = callback || function() {};
+
+  function isSuccess(status) {
+    return status >= 200 && status < 300 || status === 304;
+  }
+
+  function parseJSON(text) {
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getErrorText(xhr) {
+    if (!xhr.status) {
+      return "Connection Refused";
+    } else {
+      return xhr.status + ' ' + xhr.statusText;
+    }
+  }
+
+  postRequest('/', params, function(xhr) {
+    var response = parseJSON(xhr.responseText);
+    var result   = isSuccess(xhr.status);
+    if (result) {
+      self.writeOutput(response.output);
+    } else {
+      if (response && response.output) {
+        self.writeError(response.output);
+      } else {
+        self.writeError(getErrorText(xhr));
+      }
+    }
+    callback(result, response);
+  });
 };
 
 REPLConsole.prototype.uninstall = function() {
