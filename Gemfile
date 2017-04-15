@@ -35,11 +35,16 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem "haml-rails", "~> 0.9"
+
+
 group :development do
   gem 'guard'
   gem 'guard-bundler', require: false
   gem 'guard-livereload', '~> 2.5', require: false
   gem 'guard-rspec', require: false
+
+  gem 'web-console'
 end
 
 group :development, :test do
