@@ -1,6 +1,6 @@
 class Ledis
   class Command
-    COMMANDS = [:set, :get, :llen, :rpush, :lpop, :rpop, :lrange, :sadd, :scard, :smembers, :srem, :sinter]
+    COMMANDS = [:set, :get, :llen, :rpush, :lpop, :rpop, :lrange, :sadd, :scard, :smembers, :srem, :sinter, :keys, :del, :flushdb, :expire, :ttl]
 
     # 0: String
     # 1: List
@@ -18,6 +18,11 @@ class Ledis
       smembers: 2,
       srem: 2,
       sinter: 2,
+      keys: -1,
+      del: -1,
+      flushdb: -1,
+      expire: -1,
+      ttl: -1
     }
 
     attr_reader :command, :params

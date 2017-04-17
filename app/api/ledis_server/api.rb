@@ -5,6 +5,7 @@ module LedisServer
 
     helpers do
       def present_output(output)
+        output = output.nil? ? 'null' : output.to_s
         present :output, output
       end
     end

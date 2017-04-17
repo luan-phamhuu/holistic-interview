@@ -120,6 +120,10 @@ class Ledis
 
     values.reduce do |intersection, current_set|
       intersection.intersection(current_set)
-    end
+    end.to_a
+  end
+
+  def self.keys
+    value_table.keys
   end
 end
