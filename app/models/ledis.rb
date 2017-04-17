@@ -61,4 +61,63 @@ class Ledis
     value = value_table[key]
     value ? value[start..stop] : []
   end
+
+  def self.sadd(key, *values)
+    Command.new(:sadd).can_apply_to_key! key
+    value = value_table[key] || Set.new
+
+    adding_count = 0
+    values.map do |new_value|
+      adding_count = adding_count + 1 if value.add? new_value
+    end
+    value_table[key] = value
+
+    set_key_type(key, 'Set')
+
+    adding_count
+  end
+
+  def self.scard(key)
+    Command.new(:scard).can_apply_to_key! key
+    value = value_table[key]
+    value ? value.count : 0
+  end
+
+  def self.smembers(key)
+    Command.new(:smembers).can_apply_to_key! key
+    value_table[key]&.to_a || []
+  end
+
+  def self.srem(key, *values)
+    Command.new(:srem).can_apply_to_key! key
+    value = value_table[key]
+    return 0 if value.nil?
+
+    removing_count = 0
+    values.map do |new_value|
+      removing_count = removing_count + 1 if value.delete? new_value
+    end
+
+    removing_count
+  end
+
+  def self.sinter(key, *others_keys)
+    keys = [key, others_keys].flatten
+    command = Command.new(:sinter)
+
+    values = []
+    keys.each do |key|
+      value = value_table[key]
+      if value.nil?
+        return []
+      else
+        values << value
+        command.can_apply_to_key! key
+      end
+    end
+
+    values.reduce do |intersection, current_set|
+      intersection.intersection(current_set)
+    end
+  end
 end

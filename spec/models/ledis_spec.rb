@@ -184,8 +184,6 @@ RSpec.describe Ledis do
   describe "::lrange" do
     it_should_behave_like "command require checking apply capability", :lrange, 'a', Proc.new { described_class.lrange('a', 1, 100) }
 
-
-
     context "when key is not exist" do
       before(:each) do |example|
         described_class.class_variable_set('@@value_table', {})
@@ -221,9 +219,201 @@ RSpec.describe Ledis do
 
       it "should return empty array" do
         expect(described_class.lrange('a', 0, 100)).to eq []
-
       end
     end
+  end
+
+  describe "::sadd" do
+    it_should_behave_like "command require checking apply capability", :sadd, 'a', Proc.new { described_class.sadd('a', 1, 100) }
+
+    context "when key does not exist" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {})
+        described_class.class_variable_set('@@type_table', {})
+      end
+
+      it "should create a new set with elements" do
+        described_class.sadd('a', 1, 100, 1)
+
+        expect(value_for_key('a')).to be_instance_of Set
+        expect(value_for_key('a').to_a).to match_array [1, 100]
+      end
+
+      it "should mark this key have type Set" do
+        described_class.sadd('a', 1, 100, 1)
+        expect(type_for_key('a')).to eq 'Set'
+      end
+
+      it "should return number of element added this time" do
+        expect(described_class.sadd('a', 1, 100, 1)).to eq 2
+      end
+    end
+
+    context "when key exists" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {'a' => Set.new([1, 100])})
+        described_class.class_variable_set('@@type_table', {'a' => 2})
+      end
+
+      it "should add these elements to set" do
+        described_class.sadd('a', 2, 100)
+
+        expect(value_for_key('a')).to be_instance_of Set
+        expect(value_for_key('a').to_a).to match_array [1, 100, 2]
+      end
+
+      it "should return number of element added this time" do
+        expect(described_class.sadd('a', 2, 100)).to eq 1
+      end
+    end
+  end
+
+  describe "::scard" do
+    it_should_behave_like "command require checking apply capability", :scard, 'a', Proc.new { described_class.scard('a') }
+
+    context "when key does not exist" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {})
+        described_class.class_variable_set('@@type_table', {})
+      end
+
+      it "should return 0" do
+        expect(described_class.scard('a')).to eq 0
+      end
+
+      it "should not occupie this key" do
+        described_class.scard('a')
+        expect(value_for_key('a')).to be_nil
+        expect(type_for_key('a')).to be_nil
+      end
+    end
+
+    context "when when key exists" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {'a' => Set.new([1, 100])})
+        described_class.class_variable_set('@@type_table', {'a' => 2})
+      end
+
+      it "should return number of elements stored in this set" do
+        expect(described_class.scard('a')).to eq 2
+      end
+    end
+  end
+
+  describe "::smembers" do
+    it_should_behave_like "command require checking apply capability", :smembers, 'a', Proc.new { described_class.smembers('a') }
+
+    context "when key does not exist" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {})
+        described_class.class_variable_set('@@type_table', {})
+      end
+
+      it "should return empty array" do
+        expect(described_class.smembers('a')).to eq []
+      end
+
+      it "should not occupie this key" do
+        described_class.scard('a')
+        expect(value_for_key('a')).to be_nil
+        expect(type_for_key('a')).to be_nil
+      end
+    end
+
+    context "when when key exists" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {'a' => Set.new([1, 100])})
+        described_class.class_variable_set('@@type_table', {'a' => 2})
+      end
+
+      it "should return number of elements stored in this set" do
+        expect(described_class.smembers('a')).to match_array [1, 100]
+      end
+    end
+  end
+
+  describe "::srem" do
+    it_should_behave_like "command require checking apply capability", :srem, 'a', Proc.new { described_class.srem('a') }
+
+    context "when key does not exist" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {})
+        described_class.class_variable_set('@@type_table', {})
+      end
+
+      it "should return 0" do
+        expect(described_class.srem('a', 1, 100, 1)).to eq 0
+      end
+
+      it "should not occupie this key" do
+        described_class.srem('a')
+        expect(value_for_key('a')).to be_nil
+        expect(type_for_key('a')).to be_nil
+      end
+    end
+
+    context "when key exists" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {'a' => Set.new([1, 100, 3, 4])})
+        described_class.class_variable_set('@@type_table', {'a' => 2})
+      end
+
+      it "should remove these elements from set" do
+        described_class.srem('a', 2, 100, 3)
+        expect(value_for_key('a').to_a).to match_array [1, 4]
+      end
+
+      it "should return number of element removed this time" do
+        expect(described_class.srem('a', 2, 100, 3)).to eq 2
+      end
+    end
+  end
+
+  describe "::sinter" do
+    before(:each) do |example|
+      described_class.class_variable_set('@@value_table', {'key1' => Set.new([1, 100]), 'key2' => Set.new([1, 2]), 'key3' => Set.new([1, 100, 3]) })
+      described_class.class_variable_set('@@type_table', {'a' => 2})
+    end
+
+    it "should check apply capability for all keys" do
+      keys = ['key1', 'key2', 'key3']
+
+      command_instance = Ledis::Command.new(:sinter)
+      allow(Ledis::Command).to receive(:new).with(:sinter).and_return(command_instance)
+
+      keys.each do |key|
+        expect(command_instance).to receive(:can_apply_to_key?).with(key)
+      end
+
+      described_class.sinter('key1', 'key2', 'key3')
+    end
+
+    context "when some of the keys do not exist" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {'key1' => Set.new([1, 100]), 'key2' => Set.new([1, 2]), 'key4' => Set.new([1, 100, 3]) })
+        described_class.class_variable_set('@@type_table', {'a' => 2})
+      end
+
+      it "should return empty array immediatwly" do
+        command_instance = Ledis::Command.new(:sinter)
+        allow(Ledis::Command).to receive(:new).with(:sinter).and_return(command_instance)
+        expect(command_instance).not_to receive(:can_apply_to_key?).with('key4')
+
+        described_class.sinter('key1', 'key2', 'key3', 'key4')
+      end
+    end
+
+    context "when all keys exist" do
+      before(:each) do |example|
+        described_class.class_variable_set('@@value_table', {'key1' => Set.new([1, 100]), 'key2' => Set.new([1, 2]), 'key4' => Set.new([1, 100, 3]) })
+        described_class.class_variable_set('@@type_table', {'a' => 2})
+      end
+
+      it "should return intersection of those set" do
+        expect(described_class.sinter('key1', 'key2', 'key4')).to match_array [1]
+      end
+    end
+
   end
 
   # describe "::flushdb" do
