@@ -18,7 +18,6 @@ module LedisServer
         parsed_data = Ledis::CommandParser.new(params.command_string).parse
         command = Ledis::Command.new(parsed_data[0], parsed_data[1])
         result = command.execute!
-        byebug
         present_output result
       rescue Ledis::Errors::BaseError => e
         present_output e.formatted_message
