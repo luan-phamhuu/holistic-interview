@@ -138,4 +138,10 @@ class Ledis
 
     values.count
   end
+
+  def self.flushdb
+    @@value_table = {}
+    @@type_table = {}
+    'OK'
+  end
 end
