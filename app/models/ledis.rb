@@ -57,6 +57,8 @@ class Ledis
   end
 
   def self.lrange(key, start, stop)
+    start = start.to_i
+    stop = stop.to_i
     Command.new(:lrange).can_apply_to_key! key
     value = value_table[key]
     value ? value[start..stop] : []

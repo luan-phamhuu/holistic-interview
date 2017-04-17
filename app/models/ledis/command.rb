@@ -53,7 +53,11 @@ class Ledis
 
     def execute!
       available!
-      Ledis.send(command, *params)
+      begin
+        Ledis.send(command, *params)
+      rescue ArgumentError
+        raise Ledis::Errors::ArgumentError.new(command)
+      end
     end
   end
 end
