@@ -126,4 +126,16 @@ class Ledis
   def self.keys
     value_table.keys
   end
+
+  def self.del(*keys)
+    values = value_table.values_at(*keys)
+    values.delete(nil)
+
+    keys.each do |key|
+      value_table.delete key
+      type_table.delete key
+    end
+
+    values.count
+  end
 end
