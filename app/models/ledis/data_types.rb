@@ -1,9 +1,9 @@
 class Ledis
   module DataTypes
     DATATYPES_MAP = {
-      String => 0,
-      Array => 1,
-      Set => 2
+      'String' => 0,
+      'List' => 1,
+      'Set' => 2
     }
 
     def self.included(mod)
@@ -14,6 +14,10 @@ class Ledis
     module ClassMethod
       def get_key_type(key)
         type_table[key]
+      end
+
+      def set_key_type(key, type)
+        type_table[key] = DATATYPES_MAP[type]
       end
     end
   end

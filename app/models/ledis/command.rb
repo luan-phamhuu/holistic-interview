@@ -1,6 +1,6 @@
 class Ledis
-  class Commands
-    COMMANDs = [:set, :get, :llen, :rpush, :lpop, :rpop, :lrange, :sadd, :scard, :smembers, :srem, :sinter]
+  class Command
+    COMMANDS = [:set, :get, :llen, :rpush, :lpop, :rpop, :lrange, :sadd, :scard, :smembers, :srem, :sinter]
 
     # 0: String
     # 1: List

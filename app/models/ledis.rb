@@ -18,4 +18,16 @@ class Ledis
     super()
   end
 
+  def self.set(key, value)
+    value_table[key] = value
+    set_key_type(key, 'String')
+    value
+  end
+
+  def self.get(key)
+    Command.new(:set).can_apply_to_key! key
+    value_table[key]
+  end
+
+
 end

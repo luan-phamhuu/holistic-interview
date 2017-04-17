@@ -271,7 +271,7 @@ function REPLConsole(config) {
 
 REPLConsole.prototype.commandHandle = function(line, callback) {
   var self = this;
-  var params = 'input=' + encodeURIComponent(line);
+  var params = 'command_string=' + encodeURIComponent(line);
   callback = callback || function() {};
 
   function isSuccess(status) {
@@ -298,7 +298,7 @@ REPLConsole.prototype.commandHandle = function(line, callback) {
     var response = parseJSON(xhr.responseText);
     var result   = isSuccess(xhr.status);
     if (result) {
-      self.writeOutput(response.output);
+      self.writeOutput(response.output || 'null');
     } else {
       if (response && response.output) {
         self.writeError(response.output);
@@ -540,7 +540,7 @@ REPLConsole.prototype.renderInput = function() {
 REPLConsole.prototype.writeOutput = function(output) {
   var consoleMessage = document.createElement('pre');
   consoleMessage.className = "console-message";
-  consoleMessage.innerHTML = escapeHTML(output);
+  consoleMessage.innerHTML = output;
   this.inner.appendChild(consoleMessage);
   this.newPromptBox();
   return consoleMessage;

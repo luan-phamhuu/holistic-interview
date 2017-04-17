@@ -1,7 +1,7 @@
 class Ledis
   class CommandParser
     attr_reader :command_string
-
+        
     def initialize(command_string)
       raise ArgumentError.new('command_string must be string') unless command_string.instance_of? String
       raise ArgumentError.new('command_string can not be empty') unless command_string.present?

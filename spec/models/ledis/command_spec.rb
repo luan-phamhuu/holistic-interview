@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe Ledis::Commands do
+RSpec.describe Ledis::Command do
   before(:each) do |example|
-    stub_const('Ledis::Commands::COMMANDS', [:command0, :command1, :some_command])
+    stub_const('Ledis::Command::COMMANDS', [:command0, :command1, :some_command])
   end
 
   subject { described_class.new(:some_command) }
@@ -51,7 +51,7 @@ RSpec.describe Ledis::Commands do
     describe "#can_apply_to_key?" do
       before(:each) do |example|
         allow(Ledis).to receive(:type_table).and_return({ 'key0' => 0, 'key1' => 1, 'key2' => 2 })
-        stub_const('Ledis::Commands::COMMAND_TYPE_MAP', { :command0 => 0, :command1 => 1 })
+        stub_const('Ledis::Command::COMMAND_TYPE_MAP', { :command0 => 0, :command1 => 1 })
       end
 
       context "when command and type of key is the same category" do
@@ -76,7 +76,7 @@ RSpec.describe Ledis::Commands do
     describe "#can_apply_to_key!" do
       before(:each) do |example|
         allow(Ledis).to receive(:type_table).and_return({ 'key0' => 0, 'key1' => 1, 'key2' => 2 })
-        stub_const('Ledis::Commands::COMMAND_TYPE_MAP', { :command0 => 0, :command1 => 1 })
+        stub_const('Ledis::Command::COMMAND_TYPE_MAP', { :command0 => 0, :command1 => 1 })
       end
 
       it "should call #can_apply_to_key?" do
