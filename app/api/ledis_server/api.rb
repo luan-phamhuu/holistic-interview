@@ -1,4 +1,4 @@
-module Ledis
+module LedisServer
   class API < Grape::API
     version 'v1', using: :header, vendor: 'ledis'
     format :json

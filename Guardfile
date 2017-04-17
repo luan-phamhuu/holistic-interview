@@ -89,6 +89,9 @@ guard :rspec, cmd: "spring rspec --format documentation" do
 
   # Ruby files
   ruby = dsl.ruby
+  puts '==========='
+  puts "#{ruby.lib_files.to_s}"
+  puts '==========='
   dsl.watch_spec_files_for(ruby.lib_files)
 
   # Rails files
