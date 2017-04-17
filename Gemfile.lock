@@ -291,7 +291,6 @@ DEPENDENCIES
   pg
   puma (~> 3.0)
   rails (~> 5.0.2)
-  rb-fsevent
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)
   spring
