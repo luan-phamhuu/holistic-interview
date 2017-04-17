@@ -771,7 +771,7 @@ REPLConsole.request = function request(method, url, params, callback) {
   xhr.open(method, url, true);
   xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-  xhr.setRequestHeader("Accept", "<%= Mime[:web_console_v2] %>");
+  xhr.setRequestHeader("Accept", 'application/vnd.ledis-v1+json');
   xhr.send(params);
 
   xhr.onreadystatechange = function() {

@@ -37,6 +37,7 @@ gem 'redis', '~> 3.0'
 
 gem "haml-rails", "~> 0.9"
 
+gem 'grape'
 
 group :development do
   gem 'guard'
